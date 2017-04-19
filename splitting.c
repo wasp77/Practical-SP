@@ -64,17 +64,17 @@ void printContents(char** parsed, int length) {
   for (int x = 0; x < args_counter; x++) {
     int arg = arguement_nums[x];
     if ((x + 1) == args_counter) {
-      printf("\"%s\". ", parsed[arg]);
+      printf("\"%s\".", parsed[arg]);
     } else {
       printf("\"%s\" and ", parsed[arg]);
     }
   }
 
   if (infile > 0) {
-    printf("Read the input from the file \"%s\". ", parsed[infile]);
+    printf(" Read the input from the file \"%s\".", parsed[infile]);
   }
   if (outfile > 0) {
-    printf("Write the output to the file \"%s\". ", parsed[outfile]);
+    printf(" Write the output to the file \"%s\".", parsed[outfile]);
   }
 
   printf("\n");
