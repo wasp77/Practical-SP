@@ -9,21 +9,17 @@
 #include "systems_programming.h"
 
 int main(int argc, char **argv) {
-  char buf[1024];
-  char* split;
+  char* line = NULL;
+  size_t size;
   int length = 0;
   char** parsed;
 
-  fgets(buf, 1024, stdin);
-  split = strtok(buf, "\n");
-  
-  while (split != NULL) {
-    length = strlen(split);
+  while (getline(&line, &size, stdin) != -1) {
+    length = strlen(line);
     parsed = make2DArray(length);
-    parsed = parseString(split, length, parsed);
+    parsed = parseString(line, length, parsed);
     printContents(parsed, length);
     free2DArray(parsed, length);
-    split = strtok(NULL, "\n");
   }
 }
 
