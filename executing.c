@@ -11,7 +11,6 @@
 #include <errno.h>
 
 int main(int argc, char **argv) {
-  char* file = argv[1];
   char buf[1024];
   char* split;
   int length = 0;
@@ -20,11 +19,7 @@ int main(int argc, char **argv) {
   int my_pipe[2];
   char pipe_buf[1024];
 
-  int fd = open(file, O_RDONLY);
-  if(fd<0) {perror("Read failed: test.txt"); exit(1);}
-  int bytes = read(fd, &buf, sizeof(buf) - 1);
-  if(bytes<0) {perror("Read failed: test.txt"); exit(1);}
-  buf[bytes] = '\0';
+  fgets(buf, 1024, stdin);
   split = strtok(buf, "\n");
 
   while (split != NULL) {

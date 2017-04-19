@@ -9,19 +9,14 @@
 #include "systems_programming.h"
 
 int main(int argc, char **argv) {
-  char* file = argv[1];
-  printf("%s\n", file);
   char buf[1024];
   char* split;
   int length = 0;
   char** parsed;
 
-  int fd = open(file, O_RDONLY);
-  if(fd<0) {perror("open failed:"); exit(1);}
-  int bytes = read(fd, &buf, sizeof(buf) - 1);
-  buf[bytes] = '\0';
-
+  fgets(buf, 1024, stdin);
   split = strtok(buf, "\n");
+  
   while (split != NULL) {
     length = strlen(split);
     parsed = make2DArray(length);
