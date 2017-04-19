@@ -76,6 +76,4 @@ void printContents(char** parsed, int length) {
   if (outfile > 0) {
     printf(" Write the output to the file \"%s\".", parsed[outfile]);
   }
-
-  printf("\n");
 }
