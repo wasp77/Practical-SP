@@ -9,7 +9,8 @@
 #include "systems_programming.h"
 
 int main(int argc, char **argv) {
-  char* file = argv[0];
+  char* file = argv[1];
+  printf("%s\n", file);
   char buf[1024];
   char* split;
   int length = 0;
