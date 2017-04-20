@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     } else {
       close(my_pipe[1]);
       while (1) {
-        int jbytes = read(my_pipe[0], &pipe_buf, sizeof(pipe_buf) - 1);
+        int jbytes = read(my_pipe[0], &pipe_buf, sizeof(pipe_buf));
         if(jbytes<0) {perror("Read failed: test.txt"); exit(1);}
         if (jbytes == 0) {
           for (int j = 0; j < 1024; j++) {
@@ -50,8 +50,8 @@ int main(int argc, char **argv) {
         }
       }
       int stat_loc;
-      pid_t cpid = wait(&stat_loc);
-      printf("Child (id = %i) exit status:%i\n" , cpid, WEXITSTATUS(stat_loc));
+      wait(&stat_loc);
+      // printf("Child (id = %i) exit status:%i\n" , cpid, WEXITSTATUS(stat_loc));
       free2DArray(parsed, length);
     }
 

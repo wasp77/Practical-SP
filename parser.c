@@ -25,6 +25,7 @@ char** parseString (char* str, int length, char** parsed) {
       }
     }
     if (str[n] == '\n') {
+      parsed[parsed_counter][counter] = '\0';
       continue;
     }
     // printf("Got Here parsed_counter: %d counter: %d character: %c \n", parsed_counter, counter, str[n]);
