@@ -84,6 +84,13 @@ int main(int argc, char **argv) {
   free(threads);
   pthread_mutex_destroy(&my_mutex);
   pthread_exit(NULL);
+
+  char buf[100];
+  int fd = open("screen_holder.txt",O_RDONLY);
+  int bytes = read(fd,&buf,sizeof(buf)-1);
+  buf[bytes]='\0';
+  printf("%s",buf);
+
 }
 
 void executeCommand(char** parsed, int length, int* my_pipe) {
@@ -138,9 +145,15 @@ void executeCommand(char** parsed, int length, int* my_pipe) {
       close(my_pipe[1]);
     }
   } else {
-    dup2 (my_pipe[1], 1);
-    close(my_pipe[0]);
-    close(my_pipe[1]);
+    int screen_out = open("screen_holder.txt",O_CREAT|O_WRONLY|O_APPEND,S_IRWXU);
+    if (screen_out<0) {
+      printf("Write failed: %s\n", parsed[outfile]);
+      exit(1);
+    } else {
+      dup2 (screen_out, 1);
+      close(my_pipe[0]);
+      close(my_pipe[1]);
+    }
   }
 
 
