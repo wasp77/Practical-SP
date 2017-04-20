@@ -9,13 +9,12 @@
 #include "systems_programming.h"
 #include <sys/wait.h>
 #include <errno.h>
+#include <pthread.h>
 
-int main(int argc, char **argv) {
 
-  if (argc > 0) {
-    printf("%s\n", argv[0]);
-    printf("%s\n", argv[1]);
-  }
+pthread_mutex_t my_mutex;
+
+void* thread_func(void* arg) {
   char* line = NULL;
   size_t size;
   int length = 0;
@@ -28,7 +27,6 @@ int main(int argc, char **argv) {
     length = strlen(line);
     parsed = make2DArray(length);
     parsed = parseString(line, length, parsed);
-
 
     pipe(my_pipe);
     child = fork();
@@ -56,9 +54,36 @@ int main(int argc, char **argv) {
       // printf("Child (id = %i) exit status:%i\n" , cpid, WEXITSTATUS(stat_loc));
       free2DArray(parsed, length);
     }
-
-
   }
+  return NULL;
+}
+
+int main(int argc, char **argv) {
+  int num_threads = 0;
+  void* status;
+  
+  if (argc > 0) {
+    num_threads = atoi(argv[2]);
+  }
+
+  pthread_t *threads;
+  threads = malloc(sizeof(pthread_t) * num_threads);
+
+  for (int num = 0; num < num_threads; num++) {
+    if (pthread_create ( &threads[num], NULL, thread_func, NULL) != 0) {
+      printf("Error creating the threads\n");
+      exit(1);
+    }
+  }
+
+
+  for (int k = 0; k < num_threads; k++) {
+    pthread_join(threads[k], &status);
+  }
+
+  free(threads);
+  pthread_mutex_destroy(&my_mutex);
+  pthread_exit(NULL);
 }
 
 void executeCommand(char** parsed, int length, int* my_pipe) {
