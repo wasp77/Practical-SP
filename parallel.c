@@ -139,7 +139,7 @@ void executeCommand(char** parsed, int length, int* my_pipe) {
       close(my_pipe[1]);
     }
   } else if (outfile > 0) {
-    int out = open(parsed[outfile],O_CREAT|O_WRONLY|O_APPEND,S_IRWXU);
+    int out = open(parsed[outfile],O_CREAT|O_WRONLY,S_IRWXU);
     if (out<0) {
       printf("Write failed: %s\n", parsed[outfile]);
       exit(1);
