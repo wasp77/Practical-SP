@@ -94,11 +94,11 @@ void executeCommand(char** parsed, int length) {
 
   if (infile > 0) {
     int in = open(parsed[infile],O_RDONLY);
-    if(in<0){perror("open failed:");exit(1);}
+    if(in<0){printf("Read failed: %s\n", parsed[infile]);exit(1);}
   }
   if (outfile > 0) {
     int out = open(parsed[outfile],O_CREAT|O_WRONLY|O_APPEND,S_IRWXU);
-    if(out<0){perror("open failed:");exit(1);}
+    if(out<0){printf("Write failed: %s\n", parsed[outfile]);exit(1);}
   }
 
 
@@ -114,7 +114,7 @@ void executeCommand(char** parsed, int length) {
   arguements[counter] = NULL;
 
   if (execv(program, arguements) < 0) {
-    printf("%s\n", strerror(errno));
+    printf("Execution failed: %s\n", program);
   }
 
 }
