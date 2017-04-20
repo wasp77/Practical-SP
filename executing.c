@@ -19,9 +19,6 @@ int main(int argc, char **argv) {
   int my_pipe[2];
   char pipe_buf[1024];
 
-  fgets(buf, 1024, stdin);
-  split = strtok(buf, "\n");
-
   while (getline(&line, &size, stdin) != -1) {
     length = strlen(line);
     parsed = make2DArray(length);
