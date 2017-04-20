@@ -11,6 +11,11 @@
 #include <errno.h>
 
 int main(int argc, char **argv) {
+
+  if (argc > 0) {
+    printf("%s\n", argv[0]);
+    printf("%s\n", argv[1]);
+  }
   char* line = NULL;
   size_t size;
   int length = 0;
