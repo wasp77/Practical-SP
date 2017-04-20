@@ -34,7 +34,7 @@ void printContents(char** parsed, int length) {
 
   for (int num = 0; parsed[num][0] != '\0'; num++) {
       if (num == 0) {
-        printf("Run program \"%s\". ", parsed[num]);
+        printf("Run program \"%s\"", parsed[num]);
         continue;
       }
       if (parsed[num][0] == '<') {
@@ -55,10 +55,10 @@ void printContents(char** parsed, int length) {
   }
 
   if (args_counter == 1) {
-    printf("with arguement ");
+    printf(" with arguement ");
   }
   if (args_counter > 1){
-    printf("with arguements ");
+    printf(" with arguements ");
   }
 
   for (int x = 0; x < args_counter; x++) {
@@ -71,9 +71,9 @@ void printContents(char** parsed, int length) {
   }
 
   if (infile > 0) {
-    printf(" Read the input from file \"%s\".", parsed[infile]);
+    printf(". Read the input from file \"%s\".", parsed[infile]);
   }
   if (outfile > 0) {
-    printf(" Write the output to file \"%s\".", parsed[outfile]);
+    printf(". Write the output to file \"%s\".", parsed[outfile]);
   }
 }
