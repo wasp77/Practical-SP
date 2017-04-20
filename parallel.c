@@ -35,6 +35,7 @@ void* thread_func(void* arg) {
       executeCommand(parsed, length, my_pipe);
     } else {
       close(my_pipe[1]);
+      pthread_mutex_lock (&my_mutex);
       int fd = open("screen_holder.txt",O_RDONLY);
       int bytes = read(fd,&pipe_buf,sizeof(pipe_buf)-1);
       pipe_buf[bytes]='\0';
@@ -42,6 +43,7 @@ void* thread_func(void* arg) {
       for (int j = 0; j < 1024; j++) {
             pipe_buf[j] = '\0';
       }
+      pthread_mutex_unlock (&my_mutex);
       // while (1) {
       //   for (int j = 0; j < 1024; j++) {
       //     pipe_buf[j] = '\0';
