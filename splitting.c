@@ -55,10 +55,10 @@ void printContents(char** parsed, int length) {
   }
 
   if (args_counter == 1) {
-    printf(" with arguement ");
+    printf(" with argument ");
   }
   if (args_counter > 1){
-    printf(" with arguements ");
+    printf(" with arguments ");
   }
 
   for (int x = 0; x < args_counter; x++) {
