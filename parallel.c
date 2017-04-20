@@ -61,7 +61,7 @@ void* thread_func(void* arg) {
 int main(int argc, char **argv) {
   int num_threads = 0;
   void* status;
-  
+
   if (argc > 0) {
     num_threads = atoi(argv[2]);
   }
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
   threads = malloc(sizeof(pthread_t) * num_threads);
 
   for (int num = 0; num < num_threads; num++) {
-    if (pthread_create ( &threads[num], NULL, thread_func, NULL) != 0) {
+    if (pthread_create(&threads[num], NULL, thread_func, NULL) != 0) {
       printf("Error creating the threads\n");
       exit(1);
     }
