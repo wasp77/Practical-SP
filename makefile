@@ -23,4 +23,4 @@ helpers.o : helpers.c systems_programming.h
 	clang -Wall -Wextra helpers.c -c
 
 clean :
-	rm -f splitting.o executing.o parser.o helpers.o shellsplit runcmds
+	rm -f splitting.o executing.o parser.o helpers.o parallel.o runparallelcmds shellsplit runcmds
