@@ -88,13 +88,6 @@ int main(int argc, char **argv) {
   free(threads);
   pthread_mutex_destroy(&my_mutex);
   pthread_exit(NULL);
-
-  char buf[100];
-  int fd = open("screen_holder.txt",O_RDONLY);
-  int bytes = read(fd,&buf,sizeof(buf)-1);
-  buf[bytes]='\0';
-  printf("%s",buf);
-
 }
 
 void executeCommand(char** parsed, int length, int* my_pipe) {
