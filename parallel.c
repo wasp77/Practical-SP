@@ -49,9 +49,6 @@ void* thread_func(void* arg) {
         }
         printf("%s", pipe_buf);
       }
-      // int stat_loc;
-      // wait(&stat_loc);
-      // printf("Child (id = %i) exit status:%i\n" , cpid, WEXITSTATUS(stat_loc));
       free2DArray(parsed, length);
     }
   }
@@ -62,14 +59,14 @@ int main(int argc, char **argv) {
   int num_threads = 0;
   void* status;
 
-  if (argc > 0) {
+  if (argc > 0) { // Get the number of threads from the command line
     num_threads = atoi(argv[2]);
   }
 
   pthread_t *threads;
   threads = malloc(sizeof(pthread_t) * num_threads);
 
-  for (int num = 0; num < num_threads; num++) {
+  for (int num = 0; num < num_threads; num++) { // Create all the threads
     if (pthread_create(&threads[num], NULL, thread_func, NULL) != 0) {
       printf("Error creating the threads\n");
       exit(1);
@@ -77,20 +74,13 @@ int main(int argc, char **argv) {
   }
 
 
-  for (int k = 0; k < num_threads; k++) {
+  for (int k = 0; k < num_threads; k++) { // Wait for the threads
     pthread_join(threads[k], &status);
   }
 
   free(threads);
   pthread_mutex_destroy(&my_mutex);
   pthread_exit(NULL);
-
-  char buf[100];
-  int fd = open("screen_holder.txt",O_RDONLY);
-  int bytes = read(fd,&buf,sizeof(buf)-1);
-  buf[bytes]='\0';
-  printf("%s",buf);
-
 }
 
 void executeCommand(char** parsed, int length, int* my_pipe) {
@@ -162,7 +152,7 @@ void executeCommand(char** parsed, int length, int* my_pipe) {
   }
   arguements[counter] = NULL;
 
-  pthread_mutex_lock (&my_mutex);
+  pthread_mutex_lock (&my_mutex); // Lock off the execution of the command
   if (execv(program, arguements) < 0) {
     printf("Execute failed: %s\n", program);
   }

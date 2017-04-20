@@ -1,6 +1,7 @@
 #include "systems_programming.h"
 #include <stdlib.h>
 
+// Return a 2D array containing the strings for output
 char** parseString (char* str, int length, char** parsed) {
   int inside = 0;
   int parsed_counter = 0;
@@ -16,7 +17,7 @@ char** parseString (char* str, int length, char** parsed) {
         continue;
       }
     }
-    if (str[n] == ' ') {
+    if (str[n] == ' ') { // If space is inside quotes ignore otherwise enter a null character
       if (inside == 0) {
         parsed[parsed_counter][counter] = '\0';
         counter = 0;
@@ -24,15 +25,14 @@ char** parseString (char* str, int length, char** parsed) {
         continue;
       }
     }
-    if (str[n] == '\n') {
+    if (str[n] == '\n') { // Don't want newline characters in the parsed string
       parsed[parsed_counter][counter] = '\0';
       continue;
     }
-    // printf("Got Here parsed_counter: %d counter: %d character: %c \n", parsed_counter, counter, str[n]);
     parsed[parsed_counter][counter++] = str[n];
 
   }
-  parsed[parsed_counter++][counter] = '\0';
+  parsed[parsed_counter++][counter] = '\0'; // Make sure all strings end with null character 
   parsed[parsed_counter][0] = '\0';
 
   return parsed;

@@ -25,23 +25,23 @@ int main(int argc, char **argv) {
     parsed = parseString(line, length, parsed);
 
 
-    pipe(my_pipe);
-    child = fork();
+    pipe(my_pipe); // Create a pipe for reading output from child
+    child = fork(); // Create a child
     if (child<0) {perror("Forking failed"); exit(1);}
     if (child == 0) {
-      executeCommand(parsed, length, my_pipe);
+      executeCommand(parsed, length, my_pipe); // Child executes the command
     } else {
       close(my_pipe[1]);
       while (1) {
-        for (int j = 0; j < 1024; j++) {
+        for (int j = 0; j < 1024; j++) { // Clean out the buffer from previous input
           pipe_buf[j] = '\0';
         }
-        int jbytes = read(my_pipe[0], &pipe_buf, sizeof(pipe_buf));
+        int jbytes = read(my_pipe[0], &pipe_buf, sizeof(pipe_buf)); // Parents reads in from the pipe
         if(jbytes<0) {perror("Read failed: test.txt"); exit(1);}
         if (jbytes == 0) {
-          for (int j = 0; j < 1024; j++) {
-            pipe_buf[j] = '\0';
-          }
+          // for (int j = 0; j < 1024; j++) {
+          //   pipe_buf[j] = '\0';
+          // }
           break;
         }
         printf("%s", pipe_buf);
@@ -87,34 +87,34 @@ void executeCommand(char** parsed, int length, int* my_pipe) {
       arguement_nums[args_counter++] = num;
   }
 
-  if (infile > 0) {
+  if (infile > 0) { // If an input file exists read from it
     int in = open(parsed[infile],O_RDONLY);
     if (in<0) {
       printf("Read failed: %s\n", parsed[infile]);
       exit(1);
     } else {
-      dup2 (in, 0);
+      dup2 (in, 0); // Set the input to the file
       close(my_pipe[0]);
       close(my_pipe[1]);
     }
-  } else if (outfile > 0) {
+  } else if (outfile > 0) { // If an output file exists write to it
     int out = open(parsed[outfile],O_CREAT|O_WRONLY|O_APPEND,S_IRWXU);
     if (out<0) {
       printf("Write failed: %s\n", parsed[outfile]);
       exit(1);
     } else {
-      dup2 (out, 1);
+      dup2 (out, 1); // Set output to the file
       close(my_pipe[0]);
       close(my_pipe[1]);
     }
-  } else {
+  } else { // Otherwise write to stdin
     dup2 (my_pipe[1], 1);
     close(my_pipe[0]);
     close(my_pipe[1]);
   }
 
 
-  char* arguements[args_counter + 2];
+  char* arguements[args_counter + 2]; // Allow for the program name and NULL
   int counter = 0;
   arguements[counter++] = program;
 
@@ -123,9 +123,9 @@ void executeCommand(char** parsed, int length, int* my_pipe) {
     arguements[counter] = parsed[arg];
     counter++;
   }
-  arguements[counter] = NULL;
+  arguements[counter] = NULL; // Last element must be NULL
 
-  if (execv(program, arguements) < 0) {
+  if (execv(program, arguements) < 0) { // Execute the command 
     printf("Execute failed: %s\n", program);
   }
 
