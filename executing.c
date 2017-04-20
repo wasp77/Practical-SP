@@ -60,8 +60,8 @@ int main(int argc, char **argv) {
 }
 
 void executeCommand(char** parsed, int length) {
-  // int infile = 0;
-  // int outfile = 0;
+  int infile = 0;
+  int outfile = 0;
   int arguement_nums[length];
   int args_counter = 0;
   int file_present = 0;
@@ -73,21 +73,32 @@ void executeCommand(char** parsed, int length) {
         program = parsed[num];
         continue;
       }
-      // if (parsed[num][0] == '<') {
-      //   infile = num + 1;
-      //   file_present = 1;
-      //   continue;
-      // }
-      // if (parsed[num][0] == '>') {
-      //   outfile = num + 1;
-      //   file_present = 1;
-      //   continue;
-      // }
+      if (parsed[num][0] == '<') {
+        infile = num + 1;
+        file_present = 1;
+        arguement_nums[args_counter++] = num;
+        continue;
+      }
+      if (parsed[num][0] == '>') {
+        outfile = num + 1;
+        file_present = 1;
+        arguement_nums[args_counter++] = num;
+        continue;
+      }
       if (file_present == 1) {
         file_present = 0;
         continue;
       }
       arguement_nums[args_counter++] = num;
+  }
+
+  if (infile > 0) {
+    int in = open(parsed[infile],O_RDONLY);
+    if(in<0){perror("open failed:");exit(1);}
+  }
+  if (outfile > 0) {
+    int out = open(parsed[outfile],O_CREAT|O_WRONLY|O_APPEND,S_IRWXU);
+    if(out<0){perror("open failed:");exit(1);}
   }
 
 
