@@ -155,8 +155,10 @@ void executeCommand(char** parsed, int length, int* my_pipe) {
   }
   arguements[counter] = NULL;
 
+  pthread_mutex_lock (&my_mutex);
   if (execv(program, arguements) < 0) {
     printf("Execute failed: %s\n", program);
   }
+  pthread_mutex_unlock (&my_mutex);
 
 }
