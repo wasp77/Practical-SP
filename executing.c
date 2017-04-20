@@ -29,10 +29,7 @@ int main(int argc, char **argv) {
     child = fork();
     if (child<0) {perror("Forking failed"); exit(1);}
     if (child == 0) {
-      dup2 (my_pipe[1], 1);
-      close(my_pipe[0]);
-      close(my_pipe[1]);
-      executeCommand(parsed, length);
+      executeCommand(parsed, length, my_pipe);
     } else {
       close(my_pipe[1]);
       while (1) {
@@ -59,7 +56,7 @@ int main(int argc, char **argv) {
   }
 }
 
-void executeCommand(char** parsed, int length) {
+void executeCommand(char** parsed, int length, int* my_pipe) {
   int infile = 0;
   int outfile = 0;
   int arguement_nums[length];
@@ -94,11 +91,28 @@ void executeCommand(char** parsed, int length) {
 
   if (infile > 0) {
     int in = open(parsed[infile],O_RDONLY);
-    if(in<0){printf("Read failed: %s\n", parsed[infile]);exit(1);}
-  }
-  if (outfile > 0) {
+    if (in<0) {
+      printf("Read failed: %s\n", parsed[infile]);
+      exit(1);
+    } else {
+      dup2 (in, 0);
+      close(my_pipe[0]);
+      close(my_pipe[1]);
+    }
+  } else if (outfile > 0) {
     int out = open(parsed[outfile],O_CREAT|O_WRONLY|O_APPEND,S_IRWXU);
-    if(out<0){printf("Write failed: %s\n", parsed[outfile]);exit(1);}
+    if (out<0) {
+      printf("Write failed: %s\n", parsed[outfile]);
+      exit(1);
+    } else {
+      dup2 (out, 1);
+      close(my_pipe[0]);
+      close(my_pipe[1]);
+    }
+  } else {
+    dup2 (my_pipe[1], 1);
+    close(my_pipe[0]);
+    close(my_pipe[1]);
   }
 
 
@@ -114,7 +128,7 @@ void executeCommand(char** parsed, int length) {
   arguements[counter] = NULL;
 
   if (execv(program, arguements) < 0) {
-    printf("Execution failed: %s\n", program);
+    printf("Execute failed: %s\n", program);
   }
 
 }
