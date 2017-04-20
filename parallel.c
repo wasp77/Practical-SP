@@ -35,29 +35,20 @@ void* thread_func(void* arg) {
       executeCommand(parsed, length, my_pipe);
     } else {
       close(my_pipe[1]);
-      pthread_mutex_lock (&my_mutex);
-      int fd = open("screen_holder.txt",O_RDONLY);
-      int bytes = read(fd,&pipe_buf,sizeof(pipe_buf)-1);
-      pipe_buf[bytes]='\0';
-      printf("%s",pipe_buf);
-      for (int j = 0; j < 1024; j++) {
+      while (1) {
+        for (int j = 0; j < 1024; j++) {
+          pipe_buf[j] = '\0';
+        }
+        int jbytes = read(my_pipe[0], &pipe_buf, sizeof(pipe_buf));
+        if(jbytes<0) {perror("Read failed: test.txt"); exit(1);}
+        if (jbytes == 0) {
+          for (int j = 0; j < 1024; j++) {
             pipe_buf[j] = '\0';
+          }
+          break;
+        }
+        printf("%s", pipe_buf);
       }
-      pthread_mutex_unlock (&my_mutex);
-      // while (1) {
-      //   for (int j = 0; j < 1024; j++) {
-      //     pipe_buf[j] = '\0';
-      //   }
-      //   int jbytes = read(my_pipe[0], &pipe_buf, sizeof(pipe_buf));
-      //   if(jbytes<0) {perror("Read failed: test.txt"); exit(1);}
-      //   if (jbytes == 0) {
-      //     for (int j = 0; j < 1024; j++) {
-      //       pipe_buf[j] = '\0';
-      //     }
-      //     break;
-      //   }
-      //   printf("%s", pipe_buf);
-      // }
       // int stat_loc;
       // wait(&stat_loc);
       // printf("Child (id = %i) exit status:%i\n" , cpid, WEXITSTATUS(stat_loc));
@@ -93,6 +84,13 @@ int main(int argc, char **argv) {
   free(threads);
   pthread_mutex_destroy(&my_mutex);
   pthread_exit(NULL);
+
+  char buf[100];
+  int fd = open("screen_holder.txt",O_RDONLY);
+  int bytes = read(fd,&buf,sizeof(buf)-1);
+  buf[bytes]='\0';
+  printf("%s",buf);
+
 }
 
 void executeCommand(char** parsed, int length, int* my_pipe) {
@@ -137,7 +135,7 @@ void executeCommand(char** parsed, int length, int* my_pipe) {
       close(my_pipe[1]);
     }
   } else if (outfile > 0) {
-    int out = open(parsed[outfile],O_CREAT|O_WRONLY,S_IRWXU);
+    int out = open(parsed[outfile],O_CREAT|O_WRONLY|O_APPEND,S_IRWXU);
     if (out<0) {
       printf("Write failed: %s\n", parsed[outfile]);
       exit(1);
@@ -147,15 +145,9 @@ void executeCommand(char** parsed, int length, int* my_pipe) {
       close(my_pipe[1]);
     }
   } else {
-    int screen_out = open("screen_holder.txt",O_CREAT|O_WRONLY,S_IRWXU);
-    if (screen_out<0) {
-      printf("Write failed: %s\n", parsed[outfile]);
-      exit(1);
-    } else {
-      dup2 (screen_out, 1);
-      close(my_pipe[0]);
-      close(my_pipe[1]);
-    }
+    dup2 (my_pipe[1], 1);
+    close(my_pipe[0]);
+    close(my_pipe[1]);
   }
 
 
