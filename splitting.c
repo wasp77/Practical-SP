@@ -30,11 +30,12 @@ void printContents(char** parsed, int length) {
   int arguement_nums[length];
   int args_counter = 0;
   int file_present = 0;
+  char* program;
 
 
   for (int num = 0; parsed[num][0] != '\0'; num++) {
       if (num == 0) {
-        printf("Run program \"%s\"", parsed[num]);
+        program = parsed[num];
         continue;
       }
       if (parsed[num][0] == '<') {
@@ -55,10 +56,13 @@ void printContents(char** parsed, int length) {
   }
 
   if (args_counter == 1) {
+    printf("Run program \"%s\"", program);
     printf(" with argument ");
-  }
-  if (args_counter > 1){
+  } else if (args_counter > 1){
+    printf("Run program \"%s\"", program);
     printf(" with arguments ");
+  } else {
+    printf("Run program \"%s\".", program);
   }
 
   for (int x = 0; x < args_counter; x++) {
@@ -71,9 +75,9 @@ void printContents(char** parsed, int length) {
   }
 
   if (infile > 0) {
-    printf(". Read the input from file \"%s\".", parsed[infile]);
+    printf(" Read the input from file \"%s\".", parsed[infile]);
   }
   if (outfile > 0) {
-    printf(". Write the output to file \"%s\".", parsed[outfile]);
+    printf(" Write the output to file \"%s\".", parsed[outfile]);
   }
 }
