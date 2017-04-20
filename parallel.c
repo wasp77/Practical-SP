@@ -35,20 +35,24 @@ void* thread_func(void* arg) {
       executeCommand(parsed, length, my_pipe);
     } else {
       close(my_pipe[1]);
-      while (1) {
-        for (int j = 0; j < 1024; j++) {
-          pipe_buf[j] = '\0';
-        }
-        int jbytes = read(my_pipe[0], &pipe_buf, sizeof(pipe_buf));
-        if(jbytes<0) {perror("Read failed: test.txt"); exit(1);}
-        if (jbytes == 0) {
-          for (int j = 0; j < 1024; j++) {
-            pipe_buf[j] = '\0';
-          }
-          break;
-        }
-        printf("%s", pipe_buf);
-      }
+      int fd = open("screen_holder.txt",O_RDONLY);
+      int bytes = read(fd,&pipe_buf,sizeof(pipe_buf)-1);
+      pipe_buf[bytes]='\0';
+      printf("%s",pipe_buf);
+      // while (1) {
+      //   for (int j = 0; j < 1024; j++) {
+      //     pipe_buf[j] = '\0';
+      //   }
+      //   int jbytes = read(my_pipe[0], &pipe_buf, sizeof(pipe_buf));
+      //   if(jbytes<0) {perror("Read failed: test.txt"); exit(1);}
+      //   if (jbytes == 0) {
+      //     for (int j = 0; j < 1024; j++) {
+      //       pipe_buf[j] = '\0';
+      //     }
+      //     break;
+      //   }
+      //   printf("%s", pipe_buf);
+      // }
       // int stat_loc;
       // wait(&stat_loc);
       // printf("Child (id = %i) exit status:%i\n" , cpid, WEXITSTATUS(stat_loc));
