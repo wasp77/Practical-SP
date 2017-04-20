@@ -71,9 +71,9 @@ void printContents(char** parsed, int length) {
   }
 
   if (infile > 0) {
-    printf(" Read the input from the file \"%s\".", parsed[infile]);
+    printf(" Read the input from file \"%s\".", parsed[infile]);
   }
   if (outfile > 0) {
-    printf(" Write the output to the file \"%s\".", parsed[outfile]);
+    printf(" Write the output to file \"%s\".", parsed[outfile]);
   }
 }
