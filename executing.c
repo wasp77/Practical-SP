@@ -73,13 +73,11 @@ void executeCommand(char** parsed, int length, int* my_pipe) {
       if (parsed[num][0] == '<') {
         infile = num + 1;
         file_present = 1;
-        arguement_nums[args_counter++] = num;
         continue;
       }
       if (parsed[num][0] == '>') {
         outfile = num + 1;
         file_present = 1;
-        arguement_nums[args_counter++] = num;
         continue;
       }
       if (file_present == 1) {
